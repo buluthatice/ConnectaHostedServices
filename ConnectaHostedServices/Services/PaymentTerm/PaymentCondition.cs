@@ -11,7 +11,7 @@ namespace ConnectaHostedServices.Services.PaymentTerm
         private readonly ILogger<PaymentCondition> _logger;
         private readonly IConfiguration _configuration;
 
-        public PaymentCondition(IServiceScopeFactory serviceScopeFactory, ILogger<PaymentCondition> logger, IConfiguration configuration) : //, bool IsActive, string Uri, string Schedule
+        public PaymentCondition(IServiceScopeFactory serviceScopeFactory, IConfiguration configuration, ILogger<PaymentCondition> logger) :
             base(serviceScopeFactory, logger, configuration)
         {
             this._logger = logger;
@@ -19,7 +19,7 @@ namespace ConnectaHostedServices.Services.PaymentTerm
 
         public override async Task ProcessInScope(IServiceProvider serviceProvider)
         {
-           
+
             await Task.CompletedTask;
         }
 

@@ -11,7 +11,7 @@ namespace ConnectaHostedServices.Services.PaymentTerm
         private readonly ILogger<Vendor> _logger;
         private readonly IConfiguration _configuration;
 
-        public Vendor(IServiceScopeFactory serviceScopeFactory, ILogger<Vendor> logger, IConfiguration configuration) : //, bool IsActive, string Uri, string Schedule
+        public Vendor(IServiceScopeFactory serviceScopeFactory, IConfiguration configuration, ILogger<Vendor> logger) :
             base(serviceScopeFactory, logger, configuration)
         {
             this._logger = logger;

@@ -23,14 +23,14 @@ namespace ConnectaHostedServices.Services
         private readonly ILogger<BaseService> _logger;
         private readonly IConfiguration _configuration;
 
-        public BaseService(IServiceScopeFactory serviceScopeFactory, ILogger<BaseService> logger, IConfiguration configuration) ://, bool IsActive, string Uri, string Schedule
+        public BaseService(IServiceScopeFactory serviceScopeFactory, ILogger<BaseService> logger, IConfiguration configuration) :
             base(serviceScopeFactory)
         {
             this._logger = logger;
             this._configuration = configuration;
             string name = this.GetType().Name;
 
-            dynamic conf = GetServiceConfiguration(configuration, name);
+            dynamic conf = GetServiceConfiguration(name);
 
             _isActive = bool.Parse(conf.IsActive);
             _uri = conf.Uri;
@@ -54,7 +54,6 @@ namespace ConnectaHostedServices.Services
                     if (_schedule == null)
                         return;
                     var now = DateTime.Now;
-                    //now > _nextRun
                     if (now > _nextRun)
                     {
                         await Process();
@@ -71,13 +70,13 @@ namespace ConnectaHostedServices.Services
             }
         }
 
-        public static dynamic GetServiceConfiguration(IConfiguration configuration, string name)
+        public dynamic GetServiceConfiguration(string name)
         {
 
             dynamic obj = new ExpandoObject();
-            obj.IsActive = configuration[$"Services:{name}:IsActive"];
-            obj.Uri = configuration[$"Services:{name}:Uri"];
-            obj.Schedule = configuration[$"Services:{name}:Schedule"];
+            obj.IsActive = _configuration[$"Services:{name}:IsActive"];
+            obj.Uri = _configuration[$"Services:{name}:Uri"];
+            obj.Schedule = _configuration[$"Services:{name}:Schedule"];
             return obj;
         }
     }
