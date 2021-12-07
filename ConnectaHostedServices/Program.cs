@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Events;
 using Serilog.Extensions.Logging;
 using System;
 using System.Dynamic;
@@ -19,6 +20,21 @@ namespace ApplicationTemplate
 
         public static async Task Main(string[] args)
         {
+            //var configuration = new ConfigurationBuilder()
+            //    .SetBasePath(Directory.GetCurrentDirectory())
+            //    .AddJsonFile("appsettings.development.json")
+            //    .Build();
+
+            //Log.Logger = new LoggerConfiguration()
+            //    .ReadFrom.Configuration(configuration)
+            //    .CreateLogger();
+
+            //Log.Logger = new LoggerConfiguration()
+            //    .Enrich.FromLogContext()
+            //    .WriteTo.EventCollector(splunkHost: "https://http-inputs-arcelik.splunkcloud.com:443", eventCollectorToken: "3E3BFC94-C6FC-4A02-8B2A-084AA3B2BC7E")
+            //    .WriteTo.Console()
+            //    .CreateLogger();
+
             var host = new HostBuilder()
                 .ConfigureHostConfiguration(configHost =>
                 {
@@ -35,6 +51,13 @@ namespace ApplicationTemplate
                     configApp.AddEnvironmentVariables(prefix: "APP_");
                     configApp.AddCommandLine(args);
                 })
+                .ConfigureLogging((hostContext,logger) =>
+                {
+                    Log.Logger = new LoggerConfiguration()
+                                    .ReadFrom.Configuration(hostContext.Configuration).CreateLogger();
+                    logger.AddConfiguration(hostContext.Configuration.GetSection("Logging"));
+                    logger.AddSerilog(dispose: true);
+                })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<IHostedService, PlantService>();
@@ -49,8 +72,8 @@ namespace ApplicationTemplate
                 .UseSerilog()
                 .UseConsoleLifetime()
                 .Build();
-
+            Log.Logger.Information("Connecta hosted service started... {time}", DateTime.Now.ToString());
             await host.RunAsync();
-        }       
+        }
     }
 }
